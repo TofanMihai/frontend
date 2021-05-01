@@ -1,3 +1,5 @@
+@import url(https://unpkg.com/bootstrap@4.1.0/dist/css/bootstrap.min.css);
+
 .App {
   text-align: center;
 }
@@ -11,6 +13,126 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.weekButtons{
+  text-align: center;
+}
+.btn
+{
+  border : 1px solid #000000;
+  padding: 5px 10px;
+  margin : 10px;
+}
+.btn1{
+  padding: 10px 30px;
+  color:white;
+  background: #279695;
+}
+.btn1:hover{
+  filter : brightness(0.9);
+}
+.btn2{
+  padding: 10px 43px;
+  color:white;
+  background: #279695;
+}
+.btn2:hover{
+  filter : brightness(0.9);
+}
+
+.sendInvitationsButton{
+  padding: 10px 20px;
+  color:white;
+  background : #966400;
+}
+.sendInvitationsButton:hover{
+  filter : brightness(0.9);
+}
+
+.testFightersButton{
+  padding: 9px 32px;
+  color:white;
+  background : #966400;
+}
+.testFightersButton:hover{
+  filter:brightness(0.9);
+}
+
+.generateScheduleButton{
+  padding: 10px 10px;
+  color:white;
+  background : #966400;
+}
+.generateScheduleButton:hover{
+  filter:brightness(0.9);
+}
+
+.registerFighterButton{
+  padding: 10px 30px;
+}
+
+.fightersTableButton{
+  padding: 10px 28px;
+  color:white;
+  background: #966400;
+}
+.fightersTableButton:hover{
+  filter: brightness(0.9);
+}
+
+
+.mainPanelButtons{
+    text-align: center;
+}
+.mp1{
+  padding: 20px 35px;
+  background: #279695;
+  color:white;
+
+}
+.mp1:hover{
+  filter: brightness(0.9);
+}
+.mp2{
+  padding-bottom: 20px;
+  padding-top: 20px;
+  background: chocolate;
+  color:white;
+}
+.mp2:hover{
+  filter: brightness(0.9);
+}
+.mp3{
+  padding: 20px 107px;
+  color:white;
+  background: #968d7b;
+}
+.mp3:hover{
+  filter:brightness(0.9);
+}
+
+.wrapper {
+  text-align: center;
+}
+
+.button {
+  position: absolute;
+  top: 50%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+
+  font-weight:700;
+
+}
+
+.forumMessage{
+  text-align: center;
+  background:#968d7b;
+  color:black
+;
+  border : 1px solid #000000;
 }
 
 .App-header {

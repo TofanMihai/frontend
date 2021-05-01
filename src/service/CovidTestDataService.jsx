@@ -2,17 +2,17 @@ import axios from 'axios';
 
 const API_URL = "http://localhost:8080/assignment2"
 
-class FighterDataService
+class CovidTestDataService
 {
-    retrieveAllFighters()
+    getCovidTests()
     {
-        return axios.get(`${API_URL}/fightersList`);
+        return axios.get(`${API_URL}/covidtestsList`);
     }
 
-    createFighter(fighter)
+    insertCovidTest(covidTest)
     {
-        return axios.post(`${API_URL}/fightersTable`, fighter);
+        return axios.post(`${API_URL}/covidtestsTable`, covidTest);
     }
 }
 
-export default new FighterDataService()
+export default new CovidTestDataService()

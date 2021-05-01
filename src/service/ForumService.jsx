@@ -2,12 +2,16 @@ import axios from 'axios';
 
 const API_URL = "http://localhost:8080/assignment2"
 
-class EventDataService
+class ForumService
 {
-    getEvents()
+    getForumMessage()
     {
-        return axios.get(`${API_URL}/eventsList`);
+        return axios.get(`${API_URL}/getInvite`);
+    }
+
+    sendForumMessage(message){
+        return axios.post(`${API_URL}/sendInvite/${message}`);
     }
 }
 
-export default new EventDataService()
+export default new ForumService()

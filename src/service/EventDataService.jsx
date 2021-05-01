@@ -2,17 +2,32 @@ import axios from 'axios';
 
 const API_URL = "http://localhost:8080/assignment2"
 
-class CovidTestDataService
+class EventDataService
 {
-    getCovidTests()
+    getEvents()
     {
-        return axios.get(`${API_URL}/covidtestsList`);
+        return axios.get(`${API_URL}/eventsList`);
     }
 
-    insertCovidTest(covidTest)
+    generateEvents(startingDate, tournamentType)
     {
-        return axios.post(`${API_URL}/covidtestsTable`, covidTest);
+        return axios.post(`${API_URL}/eventsTable/${startingDate}/${tournamentType}`)
+    }
+
+    resetWeek()
+    {
+        return axios.put(`${API_URL}/resetWeek`)
+    }
+
+    nextWeek(startingDate)
+    {
+        return axios.post(`${API_URL}/eventsTable/next/${startingDate}`)
+    }
+
+    previousWeek(startingDate)
+    {
+        return axios.post(`${API_URL}/eventsTable/previous/${startingDate}`)
     }
 }
 
-export default new CovidTestDataService()
+export default new EventDataService()

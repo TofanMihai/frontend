@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import FighterDataService from "../service/FighterDataService";
 import CovidTestDataService from "../service/CovidTestDataService";
 
-class FighterRegistration extends Component
+class FighterPanel extends Component
 {
 
     constructor(props)
@@ -17,56 +17,84 @@ class FighterRegistration extends Component
             weight: '',
             inIsolation: 'Yes',
             scheduled: 'No',
-            arrivalTestDate: '2021-02-20',
+            arrivalTestDate: '',
             message: null,
             errorMessage: null
 
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.validate = this.validate.bind(this)
+        this.getArrivalTestDate = this.getArrivalTestDate.bind(this)
     }
 
+    componentDidMount() {
+        this.getArrivalTestDate()
+    }
 
-    // Ce face cand apasam pe submit
+    getArrivalTestDate()
+    {
+        FighterDataService.getArrivalTestDate()
+            .then(
+                response => {
+                    this.setState({arrivalTestDate: response.data})
+                    console.log(response)
+                }
+            )
+    }
+
     onSubmit(values)
     {
-        this.setState({errorMessage: null, message: null})
-        let fighter =
+        this.setState({errorMessage: null})
+        this.setState({message: null})
+
+        if(this.state.arrivalTestDate)
         {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            weight: parseFloat(values.weight),
-            inIsolation: 'Yes',
-            scheduled: 'No',
-        }
-        FighterDataService.insertFighter(fighter)
-            .then
-            (
-                response =>
+            let fighter =
                 {
-                    let covidTest =
+                    firstName: values.firstName,
+                    lastName: values.lastName,
+                    weight: parseFloat(values.weight),
+                    inIsolation: 'Yes',
+                    scheduled: 'No',
+                }
+            FighterDataService.insertFighter(fighter)
+                .then
+                (
+                    response =>
                     {
-                        fighterFirstName: values.firstName,
-                        fighterLastName: values.lastName,
-                        arrivalTest: 'Negative',
-                        arrivalTestDate: this.state.arrivalTestDate,
-                        secondTest : null,
-                        secondTestDate: null
+                        // console.log(this.state.arrivalTestDate)
+                        let covidTest =
+                            {
+                                fighterFirstName: values.firstName,
+                                fighterLastName: values.lastName,
+                                arrivalTest: 'Negative',
+                                arrivalTestDate: this.state.arrivalTestDate,
+                                secondTest : null,
+                                secondTestDate: null
+                            }
+                        CovidTestDataService.insertCovidTest(covidTest)
+                            .then( response =>
+                                {
+                                    this.setState({ message: "Fighter "+ fighter.firstName + " " + fighter.lastName + " was successfully registered." })
+                                    this.setState({errorMessage: null})
+                                }
+                            )
                     }
-                    CovidTestDataService.insertCovidTest(covidTest)
-                        .then(() => this.setState({ message: "Registered fighter "+ fighter.firstName + " " + fighter.lastName + " successfully" }))
-                }
-            )
-            .catch
-            (
-                error =>
-                {
-                    this.setState({errorMessage: error.response.data})
-                    console.log(error.response.data)
-                }
+                )
+                .catch
+                (
+                    error =>
+                    {
+                        this.setState({errorMessage: error.response.data})
+                        this.setState({message: null})
+                    }
 
-            )
-
+                )
+        }
+        else{
+            this.setState({errorMessage: "The registration period has not yet started. No new tournaments have been announced"})
+            this.setState({message: null})
+        }
     }
 
     validate(values)
@@ -74,29 +102,30 @@ class FighterRegistration extends Component
         let errors = {}
         if (!values.firstName)
         {
-            errors.firstName = 'First Name field cannot be empty'
+            errors.firstName = 'The First Name field cannot be empty'
         }
-        if (!/^[a-zA-Z]+$/.test(values.firstName))
+        else if (!/^[a-zA-Z]+$/.test(values.firstName))
         {
-            errors.firstName = 'Please enter a valid first name'
+            errors.firstName = 'The First Name field has to contain only letters'
         }
         if (!values.lastName)
         {
-            errors.lastName = 'Last Name field cannot be empty'
+            errors.lastName = 'The Last Name field has to contain only letters'
         }
         else if (!/^[a-zA-Z]+$/.test(values.lastName))
         {
-            errors.lastName = 'Please enter a valid last name'
+            errors.lastName = 'Please enter a valid last name containing only letters'
         }
         if (!values.weight)
         {
-            errors.weight = 'Weight field cannot be empty'
+            errors.weight = 'The Weight field cannot be empty'
         }
         else if (!/[0-9]+.?[0-9]?/.test(values.weight))
         {
             errors.weight = 'The Weight field has to contain a real number'
         }
-
+        if(errors)
+            this.setState({message: null})
         return errors
     }
 
@@ -105,7 +134,11 @@ class FighterRegistration extends Component
         let { firstName, lastName, weight} = this.state
         return (
             <div>
-                <h3 align="center" >Fighter Registration</h3>
+                <br/>
+                <h1 align="center" >Fighter Registration Form</h1>
+                <hr/>
+                <hr/>
+                <br/>
                 {this.state.message && <div className="alert alert-success">{this.state.message}</div>}
                 {this.state.errorMessage && <div className="alert alert-danger">{this.state.errorMessage}</div>}
                 <div className="container">
@@ -121,11 +154,11 @@ class FighterRegistration extends Component
                             (props) => (
                                 <Form>
                                     <ErrorMessage name="firstName" component="div"
-                                                  className="alert alert-warning" />
+                                                  className="alert alert-danger" />
                                     <ErrorMessage name="lastName" component="div"
-                                                  className="alert alert-warning" />
+                                                  className="alert alert-danger" />
                                     <ErrorMessage name="weight" component="div"
-                                                  className="alert alert-warning" />
+                                                  className="alert alert-danger" />
                                     <fieldset className="form-group">
                                         <label>First Name</label>
                                         <Field className="form-control" type="text" name="firstName"/>
@@ -138,7 +171,10 @@ class FighterRegistration extends Component
                                         <label>Weight</label>
                                         <Field className="form-control" type="text" name="weight" />
                                     </fieldset>
-                                    <button className="btn btn-success" type="submit">Register</button>
+                                    <div className="wrapper">
+                                        <button className="btn btn-success registerFighterButton" type="submit" >Register</button>
+                                    </div>
+
                                 </Form>
                             )
                         }
@@ -146,8 +182,12 @@ class FighterRegistration extends Component
 
                 </div>
             </div>
+
+
+
+
         )
     }
 }
 
-export default FighterRegistration
+export default FighterPanel
